@@ -88,3 +88,4 @@ arrow
 - [ ] Issues
 - [ ] Actions
 - [ ] Projects
+- [ ] Register as NPM Module
