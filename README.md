@@ -76,11 +76,15 @@ class SomeComponent {
 
 
 # Backlog
+- [ ] Autostart Tour with tracking cookies
 - [ ] Font Selection
-- [ ] Text Box Moves offscreen
 - [ ] Responsive with two regions (top/bottom) and direct
 arrow
 - [ ] Provide Example from README
 - [ ] Animation
     - [ ] Highlighted area moves from one area to another
     - [ ] Additional characters animated
+- [ ] Wiki
+- [ ] Issues
+- [ ] Actions
+- [ ] Projects
