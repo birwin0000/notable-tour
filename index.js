@@ -174,20 +174,17 @@ export class NotableTour {
             this.positionArrow(quadrant, arrow, e);
             let textBox = this.buildTextBox(text);
             this.positionTextBox(quadrant, textBox, arrow);
-            if (quadrant == (3 || 4)) {
-                textBox.scrollIntoView();
-            }
             let out = this.isOutOfViewport(textBox);
             if (out.any) {
-                console.log("OUT", out);
-                // Hide arrow
-                console.log("Hidden box... Hide arrow and move box");
-                this.removeDivs("arrow-div");
-                // place the textbox in relation to the element
-                this.positionArrow(quadrant, textBox, e);
-                if (quadrant == (3 || 4)) {
-                    textBox.scrollIntoView();
-                }    
+                textBox.scrollIntoView();
+                out = this.isOutOfViewport(textBox);
+                if (out.any) {
+                    this.removeDivs("arrow-div");
+                    this.positionArrow(quadrant, textBox, e);
+                    if (quadrant == (3 || 4)) {
+                        textBox.scrollIntoView();
+                    }    
+                }
             }
         }
     };
