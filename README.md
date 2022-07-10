@@ -71,16 +71,18 @@ class SomeComponent {
 ```
 
 # Bugs
-- [ ] If HTMLElement is larger than screen, the scrollto element hides the arrow and text
-- [ ] If Screen is small, the TextBox gets pushed to the left of the screen
+- [x] If HTMLElement is larger than screen, the scrollto element hides the arrow and text (Scrollto the TextBox)
+- [x] If Screen is small, the TextBox gets pushed to the left of the screen (Hide the arrow and reposition text box)
 
 
 # Backlog
-- [ ] Autostart Tour with tracking cookies
+- [ ] Provide Example from README
 - [ ] Font Selection
+- [ ] Autostart Tour with tracking cookies
+- [ ] Implement CSS
+- [ ] Themes
 - [ ] Responsive with two regions (top/bottom) and direct
 arrow
-- [ ] Provide Example from README
 - [ ] Animation
     - [ ] Highlighted area moves from one area to another
     - [ ] Additional characters animated

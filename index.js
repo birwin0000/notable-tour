@@ -39,6 +39,9 @@ export class NotableTour {
         this.doTour(e, e.dataset.tour);
     };
 
+    /**
+     * Re-does the current tour element
+     */
     currTour() {
         let e = this.queue.curqueue();
         this.doTour(e, e.dataset.tour);
@@ -169,9 +172,23 @@ export class NotableTour {
             let arrow = this.buildArrow(e);
             document.getElementById("tourdewebpage_arrow_quadrant_" + quadrant).style.display = "block";
             this.positionArrow(quadrant, arrow, e);
-            //let textBox = buildTextBox(e.dataset.tour);
             let textBox = this.buildTextBox(text);
             this.positionTextBox(quadrant, textBox, arrow);
+            if (quadrant == (3 || 4)) {
+                textBox.scrollIntoView();
+            }
+            let out = this.isOutOfViewport(textBox);
+            if (out.any) {
+                console.log("OUT", out);
+                // Hide arrow
+                console.log("Hidden box... Hide arrow and move box");
+                this.removeDivs("arrow-div");
+                // place the textbox in relation to the element
+                this.positionArrow(quadrant, textBox, e);
+                if (quadrant == (3 || 4)) {
+                    textBox.scrollIntoView();
+                }    
+            }
         }
     };
 
@@ -195,6 +212,29 @@ export class NotableTour {
             (boxHCenter < windowHCenter ? 1 : 2) :
             (boxHCenter < windowHCenter ? 4 : 3);
     }
+
+
+    /**
+     * Check if an element is out of the viewport
+     * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
+     * @param  {Node}  elem The element to check
+     * @return {Object}     A set of booleans for each side of the element
+     */
+    isOutOfViewport (elem) {
+
+        // Get element's bounding
+        var bounding = elem.getBoundingClientRect();
+
+        // Check if it's out of the viewport on each side
+        var out = {};
+        out.top = bounding.top < 0;
+        out.left = bounding.left < 0;
+        out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
+        out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
+        out.any = out.top || out.left || out.bottom || out.right;
+        out.all = out.top && out.left && out.bottom && out.right;
+        return out;
+    };
 
 
     /**
