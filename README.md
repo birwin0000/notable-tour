@@ -8,6 +8,8 @@ Notable Tour will highlight different HTMLElements by surrounding the element wi
 
 `npm i https://github.com/birwin0000/notable-tour`
 
+# Example
+<https://jsfiddle.net/1ywfL0as/1/show>
 
 # Instructions
 
@@ -76,7 +78,7 @@ class SomeComponent {
 
 
 # Backlog
-- [ ] Provide Example from README
+- [x] Provide Example from README
 - [ ] Font Selection
 - [ ] Autostart Tour with tracking cookies
 - [ ] Implement CSS
