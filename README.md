@@ -9,7 +9,7 @@ Notable Tour will highlight different HTMLElements by surrounding the element wi
 `npm i https://github.com/birwin0000/notable-tour`
 
 # Example
-<https://jsfiddle.net/1ywfL0as/1/show>
+<https://jsfiddle.net/1ywfL0as/2/show>
 
 # Instructions
 
