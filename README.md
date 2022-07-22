@@ -1,6 +1,6 @@
 # About
 
-The Notable Tour library will will take the user on a tour of your application.
+The Notable Tour library will take the user on a tour of your application.
 
 Notable Tour will highlight different HTMLElements by surrounding the element with a darkened div and providing a text description/instructions for the user to read.
 
