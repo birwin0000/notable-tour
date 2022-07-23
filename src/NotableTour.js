@@ -1,6 +1,14 @@
+import {Queue} from './Queue.js';
+
+// Themes
+import style from './style.css';
+import light from './theme/light.css';
+import dark from './theme/dark.css';
+
 export class NotableTour {
 
-    constructor(conf = {}) {
+    constructor(conf = {}, queue = new Queue()) {
+        this.queue = queue;
         let config = {
             backgroundColor: 'black',
             color: '#ffffff',
@@ -17,11 +25,29 @@ export class NotableTour {
                 end: {
                     classes: ["btn", "btn-primary"]
                 },
-            }
+            },
+            theme : 'light'
         };
         this.config = {...config, ...conf};
+        var theme = this.getTheme(this.config.theme)
+        var sheet = new CSSStyleSheet();
+        sheet.replace(theme);
+        var baseSheet = new CSSStyleSheet();
+        baseSheet.replace(style);
+        document.adoptedStyleSheets = [baseSheet, sheet];
     }
 
+    // TODO: Get this theme loader to be more dynamic
+    getTheme(theme = 'light') {
+        //return await import(theme ? `./theme/${theme}.css` : './theme/light.css');
+        var ret = light;
+        switch(theme) {
+            case "dark":
+                ret = dark;
+                break;
+        }
+        return ret;
+    }
 
     /**
      * Displays the next tour item
@@ -69,6 +95,7 @@ export class NotableTour {
     addDiv(width, height, left, top) {
         let div = document.createElement("div");
         document.body.appendChild(div);
+
         div.style.backgroundColor = this.config.backgroundColor;
         div.style.zIndex = this.config.highestZ + 1;
         
@@ -170,7 +197,8 @@ export class NotableTour {
             this.encircleComponent(e);
             let quadrant = this.getQuadrant(e);
             let arrow = this.buildArrow(e);
-            document.getElementById("tourdewebpage_arrow_quadrant_" + quadrant).style.display = "block";
+            document.getElementById("notabletour-arrow-quadrant-" + quadrant).style.display = "block";
+            document.getElementById("notabletour-arrow-head").style.display = "block";
             this.positionArrow(quadrant, arrow, e);
             let textBox = this.buildTextBox(text);
             this.positionTextBox(quadrant, textBox, arrow);
@@ -275,13 +303,13 @@ export class NotableTour {
                 <svg width="275" height="155" class="arrow_canvas">
                     <defs>
                         <marker id="arrowMarker" viewBox="0 0 36 21" refX="21" refY="10" markerUnits="strokeWidth" orient="auto" markerWidth="16" markerHeight="12">
-                            <path style="fill:none;stroke:${this.config.color};stroke-width:2;" d="M0,0 c30,11 30,9 0,20"></path>
+                            <path class="notabletour-arrow" d="M0,0 c30,11 30,9 0,20" id="notabletour-arrow-head"></path>
                         </marker>
                     </defs>
-                    <path class="tourdewebpage-arrow" style="display:none; fill:none; stroke:${this.config.color}; stroke-width:3" marker-end="url(#arrowMarker)" d="M15,15 Q245,15 245,147" id="tourdewebpage_arrow_quadrant_3"></path>
-                    <path class="tourdewebpage-arrow" style="display:none; fill:none; stroke:${this.config.color}; stroke-width:3" marker-end="url(#arrowMarker)" d="M245,147 Q8,147 15,15" id="tourdewebpage_arrow_quadrant_1"></path>
-                    <path class="tourdewebpage-arrow" style="display:none; fill:none; stroke:${this.config.color}; stroke-width:3" marker-end="url(#arrowMarker)" d="M15,147 Q245,147 245,15" id="tourdewebpage_arrow_quadrant_2"></path>
-                    <path class="tourdewebpage-arrow" style="display:none; fill:none; stroke:${this.config.color}; stroke-width:3" marker-end="url(#arrowMarker)" d="M245,15 Q15,15 15,147" id="tourdewebpage_arrow_quadrant_4"></path>
+                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M15,15 Q245,15 245,147" id="notabletour-arrow-quadrant-3"></path>
+                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M245,147 Q8,147 15,15" id="notabletour-arrow-quadrant-1"></path>
+                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M15,147 Q245,147 245,15" id="notabletour-arrow-quadrant-2"></path>
+                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M245,15 Q15,15 15,147" id="notabletour-arrow-quadrant-4"></path>
                 </svg>
             </div>
         `;
@@ -336,11 +364,14 @@ export class NotableTour {
         let highestZ = this.findHighestZ;
         let e = document.createElement("div");
         document.body.appendChild(e);
+
+
         e.style.position = "absolute";
         e.style.zIndex = highestZ + 2;
         e.classList.add("textbox-div");
+        e.classList.add("notable-text");
         e.innerHTML = txt + "<br />";
-        e.style.color = this.config.color;
+        // e.style.color = this.config.color;
         e.style.display = "table-cell";
         e.style.verticalAlign = "middle";
         if (!this.queue.isEmpty) {
@@ -423,7 +454,7 @@ export class NotableTour {
      * @param {object} conf Configuration to override default config
      */
     initTour() {
-        this.queue = new Queue();
+        // this.queue = new Queue();
         let components = [];
         if (this.config.tour) {
             this.config.tour.forEach(t => {
@@ -445,42 +476,4 @@ export class NotableTour {
         this.tourRunning = true;
     };
 
-}
-
-class Queue {
-    constructor() {
-        this.elements = {};
-        this.head = 0;
-        this.tail = 0;
-    }
-    enqueue(element) {
-        this.elements[this.tail] = element;
-        this.tail++;
-    }
-    dequeue() {
-        const item = this.elements[this.head];
-        this.head++;
-        return item;
-    }
-    prequeue() {
-        const item = this.elements[this.head - 2];
-        this.head--;
-        return item;
-    }
-    curqueue() {
-        const item = this.elements[this.head - 1];
-        return item;
-    }
-    peek() {
-        return this.elements[this.head];
-    }
-    get length() {
-        return this.tail - this.head;
-    }
-    get isEmpty() {
-        return this.length === 0;
-    }
-    get isStart() {
-        return this.head === 1;
-    }
 }

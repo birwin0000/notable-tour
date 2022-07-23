@@ -1,0 +1,10 @@
+.notabletour-arrow {
+    stroke: purple;
+    stroke-width: 3;
+    display: none;
+    fill: none;
+}
+
+#notabletour-arrow-head {
+    stroke-width: 2;
+}
