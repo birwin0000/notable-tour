@@ -1,20 +1,27 @@
-import {Queue} from './Queue.js';
+import { Queue } from './Queue.js';
+import { Arrow } from './pointer/Arrow.js';
+import { NotableTourUtil } from './NotableTourUtil.js';
 
-// Themes
+// Themes // TODO: Would be nice to dynamically load only one theme, but webpack chokes
 import style from './style.css';
 import light from './theme/light.css';
 import dark from './theme/dark.css';
+import elegant from './theme/elegant.css';
+import fantasy from './theme/fantasy.css';
+import robot from './theme/robot.css';
 
 export class NotableTour {
 
-    constructor(conf = {}, queue = new Queue()) {
+    constructor(conf = {}, pointer = new Arrow(), queue = new Queue(), util = new NotableTourUtil()) {
         this.queue = queue;
-        let config = {
+        this.util = util;
+        this.pointer = pointer;
+        var config = {
             backgroundColor: 'black',
             color: '#ffffff',
             highestZ: 999,
             opacity: .8,
-            className: 'notable-div-dyn',
+            className: 'notable-tour',
             buttons: {
                 next: {
                     classes: ["btn", "btn-primary"]
@@ -29,6 +36,14 @@ export class NotableTour {
             theme : 'light'
         };
         this.config = {...config, ...conf};
+        this.loadTheme();
+    }
+
+
+    /**
+     * Loads the theme identified in the configuration object along with the base stylesheet
+     */
+    loadTheme() {
         var theme = this.getTheme(this.config.theme)
         var sheet = new CSSStyleSheet();
         sheet.replace(theme);
@@ -37,6 +52,7 @@ export class NotableTour {
         document.adoptedStyleSheets = [baseSheet, sheet];
     }
 
+
     // TODO: Get this theme loader to be more dynamic
     getTheme(theme = 'light') {
         //return await import(theme ? `./theme/${theme}.css` : './theme/light.css');
@@ -44,6 +60,15 @@ export class NotableTour {
         switch(theme) {
             case "dark":
                 ret = dark;
+                break;
+            case "elegant":
+                ret = elegant;
+                break;
+            case "fantasy":
+                ret = fantasy;
+                break;
+            case "robot":
+                ret = robot;
                 break;
         }
         return ret;
@@ -74,62 +99,20 @@ export class NotableTour {
     };
 
 
-    /**
-     * Finds the highest z-index component in the body of the document
-     */
-     get findHighestZ() {
-        return [...document.querySelectorAll('body *')]
-        .map(elt => parseFloat(getComputedStyle(elt).zIndex))
-        .reduce((highest, z) => z > highest ? z : highest, 1);
-    }
 
 
-    /**
-     * Adds the four divs to the page based upon the config (Should we decouple this from the config?)
-     * @param {int} width Width of the div
-     * @param {int} height Height of the div 
-     * @param {int} left Left position of the div
-     * @param {int} top top of the div
-     * @returns Component - The div created
-     */
-    addDiv(width, height, left, top) {
-        let div = document.createElement("div");
-        document.body.appendChild(div);
-
-        div.style.backgroundColor = this.config.backgroundColor;
-        div.style.zIndex = this.config.highestZ + 1;
-        
-        div.style.width = width + "px";
-        div.style.height = height + "px";
-        div.style.left = left + "px";
-        div.style.top = top + "px";
-        
-        div.style.position = "absolute";
-        div.style.opacity = this.config.opacity;
-        div.classList.add(this.config.className);
-        
-        return div;
-    };
 
 
-    /**
-     * Removes all Divs with a class name
-     * @param {string} className name to remove
-     */
-    removeDivs(className) {
-        const boxes = document.querySelectorAll('.' + className);
-        boxes.forEach(box => {
-            box.remove();
-        });
-    };
 
+    // TODO: Should require all notable tour components to have a base class name and only remove that name
+    // TODO: This clear() function can go away and just call removeDivs with the classname.
     /**
      * Removes all components used in the tour step
      */
     clear() {
-        this.removeDivs(this.config.className);
-        this.removeDivs("arrow-div");
-        this.removeDivs("textbox-div");
+        this.util.removeDivs("." + this.config.className);
+        //this.util.removeDivs(".arrow-div");
+        //this.util.removeDivs(".textbox-div");
     };
 
 
@@ -157,28 +140,15 @@ export class NotableTour {
         let width = Math.max(body.scrollWidth, body.offsetWidth,
                 html.clientWidth, html.scrollWidth, html.offsetWidth);
 
-        let highestZ = this.findHighestZ;
-        // let box = document.getElementById(divName);
+        //let highestZ = this.util.findHighestZ;
         if (comp) {
             let info = comp.getBoundingClientRect();
-            let rightDiv = this.addDiv(width - info.right, height, info.right + window.scrollX, 0);
-            let leftDiv = this.addDiv(info.left + window.scrollX, height, 0, 0);
-            let bottomDiv = this.addDiv(info.width, height - (info.bottom + window.scrollY), info.left + window.scrollX, info.bottom + window.scrollY);
-            let topDiv =  this.addDiv(info.width, info.top + window.scrollY, info.left + window.scrollX, 0);
+            let zIndex = this.config.highestZ + 1;
+            let rightDiv = this.util.addAbsoluteDiv(width - info.right, height, info.right + window.scrollX, 0, [this.config.className, `${this.config.className}-background`], zIndex);
+            let leftDiv = this.util.addAbsoluteDiv(info.left + window.scrollX, height, 0, 0, [this.config.className, `${this.config.className}-background`], zIndex);
+            let bottomDiv = this.util.addAbsoluteDiv(info.width, height - (info.bottom + window.scrollY), info.left + window.scrollX, info.bottom + window.scrollY, [this.config.className, `${this.config.className}-background`], zIndex);
+            let topDiv =  this.util.addAbsoluteDiv(info.width, info.top + window.scrollY, info.left + window.scrollX, 0, [this.config.className, `${this.config.className}-background`], zIndex);
         }
-    }
-
-
-    /**
-     * Gets Window Height and Width
-     */
-    getHW() {
-        let body = document.body, html = document.documentElement;
-        let height = Math.max( body.scrollHeight, body.offsetHeight, 
-            html.clientHeight, html.scrollHeight, html.offsetHeight );
-        let width = Math.max(body.scrollWidth, body.offsetWidth,
-            html.clientWidth, html.scrollWidth, html.offsetWidth);			
-        return {height: height, width: width};
     }
 
 
@@ -195,19 +165,20 @@ export class NotableTour {
         if (e) {
             e.scrollIntoView();
             this.encircleComponent(e);
-            let quadrant = this.getQuadrant(e);
-            let arrow = this.buildArrow(e);
-            document.getElementById("notabletour-arrow-quadrant-" + quadrant).style.display = "block";
-            document.getElementById("notabletour-arrow-head").style.display = "block";
+            let quadrant = this.util.getQuadrant(e);
+            let arrow = this.buildArrow(this.config.className);
+            // TODO: All of these hard-coded names should be in a config somewhere.
+            document.getElementById(`${this.config.className}-arrow-quadrant-${quadrant}`).style.display = "block";
+            document.getElementById(`${this.config.className}-arrow-head`).style.display = "block";
             this.positionArrow(quadrant, arrow, e);
             let textBox = this.buildTextBox(text);
             this.positionTextBox(quadrant, textBox, arrow);
-            let out = this.isOutOfViewport(textBox);
+            let out = this.util.isOutOfViewport(textBox);
             if (out.any) {
                 textBox.scrollIntoView();
-                out = this.isOutOfViewport(textBox);
+                out = this.util.isOutOfViewport(textBox); // Gotta check again because I scrolled
                 if (out.any) {
-                    this.removeDivs("arrow-div");
+                    this.util.removeDivs(`.${this.config.className}-arrow-div`);
                     this.positionArrow(quadrant, textBox, e);
                     if (quadrant == (3 || 4)) {
                         textBox.scrollIntoView();
@@ -218,48 +189,8 @@ export class NotableTour {
     };
 
 
-    /**
-     * Give the quadrant the highlighted element resides in
-     * @param {component} element Element to find quadrant of 
-     * @returns number indicating which quadrant of the screen
-     * the component resides in 
-     */
-    getQuadrant(element) {
-        if (!element) 
-            return 0;
-        let wind = this.getHW();
-        let box = element.getBoundingClientRect();
-        let windowVCenter = wind.height / 2;
-        let windowHCenter = wind.width / 2;
-        let boxHCenter = box.width / 2 + box.left + window.scrollX;
-        let boxVCenter = box.height / 2 + box.top + window.scrollY;
-        return boxVCenter < windowVCenter ?
-            (boxHCenter < windowHCenter ? 1 : 2) :
-            (boxHCenter < windowHCenter ? 4 : 3);
-    }
 
 
-    /**
-     * Check if an element is out of the viewport
-     * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
-     * @param  {Node}  elem The element to check
-     * @return {Object}     A set of booleans for each side of the element
-     */
-    isOutOfViewport (elem) {
-
-        // Get element's bounding
-        var bounding = elem.getBoundingClientRect();
-
-        // Check if it's out of the viewport on each side
-        var out = {};
-        out.top = bounding.top < 0;
-        out.left = bounding.left < 0;
-        out.bottom = bounding.bottom > (window.innerHeight || document.documentElement.clientHeight);
-        out.right = bounding.right > (window.innerWidth || document.documentElement.clientWidth);
-        out.any = out.top || out.left || out.bottom || out.right;
-        out.all = out.top && out.left && out.bottom && out.right;
-        return out;
-    };
 
 
     /**
@@ -274,9 +205,9 @@ export class NotableTour {
         var i = 0;
         var interval = setInterval(function() {
             if (i++ >= array.length) {
-                this.removeDivs(this.config.className);
-                this.removeDivs("arrow-div");
-                this.removeDivs("textbox-div");
+                this.util.removeDivs("." + this.config.className);
+//                this.util.removeDivs(`.${this.config.className}-arrow-div`);
+//                this.util.removeDivs(".textbox-div");
                 this.clearInterval(interval);
             }
             else {
@@ -288,34 +219,37 @@ export class NotableTour {
     }
 
 
+    // TODO: Arrow should be its own class and implement a Pointer Interface so that we can add other pointers in the future!
     /**
      * Builds Arrow
      */
-    buildArrow() {
-        let highestZ = this.findHighestZ;
-        let e = document.createElement("div");
-        document.body.appendChild(e);	
+    buildArrow(className) {
+        let highestZ = this.util.findHighestZ;
+        let e = this.util.addDiv([className, `${className}-arrow-div`]);
+//        let e = document.createElement("div");
+//        document.body.appendChild(e);	
         e.style.position = "absolute";
-        e.style.color = this.config.color;
+        //e.style.color = this.config.color;
 
         let arrowHTML = `
-            <div id="arrow-box" style="position: relative; z-index: ${highestZ + 2}">
+            <div id="${this.config.className}-arrow-box" style="position: relative; z-index: ${highestZ + 1}">
                 <svg width="275" height="155" class="arrow_canvas">
                     <defs>
                         <marker id="arrowMarker" viewBox="0 0 36 21" refX="21" refY="10" markerUnits="strokeWidth" orient="auto" markerWidth="16" markerHeight="12">
-                            <path class="notabletour-arrow" d="M0,0 c30,11 30,9 0,20" id="notabletour-arrow-head"></path>
+                            <path class="${this.config.className}-arrow" d="M0,0 c30,11 30,9 0,20" id="${this.config.className}-arrow-head"></path>
                         </marker>
                     </defs>
-                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M15,15 Q245,15 245,147" id="notabletour-arrow-quadrant-3"></path>
-                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M245,147 Q8,147 15,15" id="notabletour-arrow-quadrant-1"></path>
-                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M15,147 Q245,147 245,15" id="notabletour-arrow-quadrant-2"></path>
-                    <path class="notabletour-arrow" marker-end="url(#arrowMarker)" d="M245,15 Q15,15 15,147" id="notabletour-arrow-quadrant-4"></path>
+                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M15,15 Q245,15 245,147" id="${this.config.className}-arrow-quadrant-3"></path>
+                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M245,147 Q8,147 15,15" id="${this.config.className}-arrow-quadrant-1"></path>
+                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M15,147 Q245,147 245,15" id="${this.config.className}-arrow-quadrant-2"></path>
+                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M245,15 Q15,15 15,147" id="${this.config.className}-arrow-quadrant-4"></path>
                 </svg>
             </div>
         `;
 
         e.insertAdjacentHTML('beforeend', arrowHTML);
-        e.classList.add("arrow-div");
+        //e.classList.add(`${className}-arrow-div`);
+        //e.classList.add(className);
         return e;
     };
 
@@ -361,15 +295,16 @@ export class NotableTour {
      * @returns Text enclosed in a div tag
      */
     buildTextBox(txt) {
-        let highestZ = this.findHighestZ;
+        let highestZ = this.util.findHighestZ;
         let e = document.createElement("div");
         document.body.appendChild(e);
 
 
         e.style.position = "absolute";
-        e.style.zIndex = highestZ + 2;
-        e.classList.add("textbox-div");
-        e.classList.add("notable-text");
+        e.style.zIndex = highestZ + 2; // TODO: Why 2? Also, should I ust find the highest z once and set it in the constructor?
+        e.classList.add(this.config.className);
+        //e.classList.add("textbox-div");
+        e.classList.add(`${this.config.className}-text`);
         e.innerHTML = txt + "<br />";
         // e.style.color = this.config.color;
         e.style.display = "table-cell";
@@ -377,8 +312,9 @@ export class NotableTour {
         if (!this.queue.isEmpty) {
             let n = document.createElement("button");
             n.textContent = "Next";
-            this.config.buttons.next.classes.forEach(c => n.classList.add(c));
+            //this.config.buttons.next.classes.forEach(c => n.classList.add(c));
             n.classList.add(...this.config.buttons.next.classes);
+            n.classList.add(...[`${this.config.className}-button`, `${this.config.className}-button-next`]);
             n.addEventListener('click', () => this.nextTour());
             e.appendChild(n);
         }
@@ -387,12 +323,14 @@ export class NotableTour {
             let n = document.createElement("button");
             n.textContent = "Prev";
             n.classList.add(...this.config.buttons.previous.classes);
+            n.classList.add(...[`${this.config.className}-button`, `${this.config.className}-button-previous`]);
             n.addEventListener('click', () => this.prevTour());
             e.appendChild(n);
         }
         let q = document.createElement("button");
         q.textContent = this.queue.isEmpty ? "End" : "Exit";
-        q.classList.add(...this.config.buttons.end.classes)
+        q.classList.add(...this.config.buttons.end.classes);
+        q.classList.add(...[`${this.config.className}-button`, `${this.config.className}-button-end`]);
         q.addEventListener('click', () => {
             this.clear();
             this.tourRunning = false;
@@ -456,6 +394,7 @@ export class NotableTour {
     initTour() {
         // this.queue = new Queue();
         let components = [];
+        // This allows the tour to be overridden
         if (this.config.tour) {
             this.config.tour.forEach(t => {
                 let component = document.getElementById(t.id);
@@ -464,16 +403,20 @@ export class NotableTour {
             });
             
         } else {
+            // TODO - data-tour name should be configurable.
             components = document.querySelectorAll('[data-tour]');
         }
         components.forEach(c => this.queue.enqueue(c));
     };
 
 
-    start(conf = {}) {
-        this.initTour(conf);
+    start() {
+        this.initTour();
         this.nextTour();
         this.tourRunning = true;
     };
 
 }
+
+
+

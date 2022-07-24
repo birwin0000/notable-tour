@@ -1,10 +1,42 @@
-.notabletour-arrow {
-    stroke: purple;
+.notable-tour-arrow {
+    stroke: white;
     stroke-width: 3;
     display: none;
     fill: none;
 }
 
-#notabletour-arrow-head {
+#notable-tour-arrow-head {
     stroke-width: 2;
+}
+
+.notable-tour-background {
+    background-color: black;
+    opacity: .8;
+    position: absolute;
+}
+
+.notable-tour-text {
+    color: white;
+    font-size: 30px;
+}
+
+
+.notable-tour-button {
+    margin-left: 3px;
+}
+
+.notable-tour-button-previous {
+
+}
+
+.notable-tour-button-next {
+
+}
+
+.notable-tour-button-end {
+    
+}
+
+.notable-tour-button-start {
+
 }
