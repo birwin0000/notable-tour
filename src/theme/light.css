@@ -1,0 +1,17 @@
+.notable-text {
+    color: green;
+    font-family: Copperplate, Papyrus, fantasy;
+}
+
+.notabletour-arrow {
+    stroke: white;
+    stroke-width: 3;
+    display: none;
+    fill: none;
+}
+
+.notable-div-component-background {
+    background-color: black;
+    opacity: .7;
+    color: white;
+}

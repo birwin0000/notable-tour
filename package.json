@@ -2,10 +2,19 @@
   "name": "notable-tour",
   "version": "0.0.1",
   "description": "Tour Library",
-  "main": "index.js",
+  "main": "src/NotableTour.js",
   "scripts": {
+    "start": "webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brian Irwin",
-  "license": "MIT"
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^6.7.1",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "clean-webpack-plugin": "^4.0.0"
+  }
 }

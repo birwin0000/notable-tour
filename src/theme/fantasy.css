@@ -1,0 +1,19 @@
+.notable-tour-arrow {
+    stroke: yellow;
+    stroke-width: 5;
+}
+
+#notable-tour-arrow-head {
+    stroke-width: 3;
+}
+
+.notable-tour-background {
+    opacity: 1;
+}
+
+.notable-tour-text {
+    color: yellow;
+    font-family: Copperplate, Papyrus, fantasy;
+}
+
+
