@@ -124,15 +124,10 @@ export class NotableTour {
      */
     encircleComponent(comp) {
         this.util.removeDivs("." + this.config.className);
+        let bounding = document.body.getBoundingClientRect();
+        let height = Math.floor(bounding.height);
+        let width = Math.floor(bounding.width);
 
-
-        let body = document.body, html = document.documentElement;
-        let height = Math.max( body.scrollHeight, body.offsetHeight, 
-                html.clientHeight, html.scrollHeight, html.offsetHeight );
-        let width = Math.max(body.scrollWidth, body.offsetWidth,
-                html.clientWidth, html.scrollWidth, html.offsetWidth);
-
-        //let highestZ = this.util.findHighestZ;
         if (comp) {
             let info = comp.getBoundingClientRect();
             let zIndex = this.config.highestZ + 1;
@@ -141,6 +136,7 @@ export class NotableTour {
             let bottomDiv = this.util.addAbsoluteDiv(info.width, height - (info.bottom + window.scrollY), info.left + window.scrollX, info.bottom + window.scrollY, [this.config.className, `${this.config.className}-background`], zIndex);
             let topDiv =  this.util.addAbsoluteDiv(info.width, info.top + window.scrollY, info.left + window.scrollX, 0, [this.config.className, `${this.config.className}-background`], zIndex);
         }
+        
     }
 
 
