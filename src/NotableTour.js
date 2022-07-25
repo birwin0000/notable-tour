@@ -15,7 +15,6 @@ export class NotableTour {
     constructor(conf = {}, pointer = new Arrow(), queue = new Queue(), util = new NotableTourUtil()) {
         this.queue = queue;
         this.util = util;
-        this.pointer = pointer;
         var config = {
             backgroundColor: 'black',
             color: '#ffffff',
@@ -36,6 +35,12 @@ export class NotableTour {
             theme : 'light'
         };
         this.config = {...config, ...conf};
+
+        this.pointer = pointer;
+        pointer.zIndex = this.util.findHighestZ + 1;
+        pointer.className = this.config.className;
+
+
         this.loadTheme();
     }
 
@@ -100,39 +105,26 @@ export class NotableTour {
 
 
 
-
-
-
-
-    // TODO: Should require all notable tour components to have a base class name and only remove that name
-    // TODO: This clear() function can go away and just call removeDivs with the classname.
-    /**
-     * Removes all components used in the tour step
-     */
-    clear() {
-        this.util.removeDivs("." + this.config.className);
-        //this.util.removeDivs(".arrow-div");
-        //this.util.removeDivs(".textbox-div");
-    };
-
-
     /**
      * TODO: I believe we can eliminate this function.
      * Encircles an element with divs at a higher z-index than any other component on the web page
      * @param {string} divName Name of component to encircle 
      * @param {object} config Configuration
      */
+    /*
     encircle(divName) {
         let box = document.getElementById(divName);
         this.encircleComponent(box, this.config);
     };
+    */
 
     /**
      * Encircles Component with divs
      * @param {HTMLElement} comp Component to encircle with dark background 
      */
     encircleComponent(comp) {
-        this.clear();
+        this.util.removeDivs("." + this.config.className);
+
 
         let body = document.body, html = document.documentElement;
         let height = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -165,21 +157,27 @@ export class NotableTour {
         if (e) {
             e.scrollIntoView();
             this.encircleComponent(e);
-            let quadrant = this.util.getQuadrant(e);
-            let arrow = this.buildArrow(this.config.className);
-            // TODO: All of these hard-coded names should be in a config somewhere.
-            document.getElementById(`${this.config.className}-arrow-quadrant-${quadrant}`).style.display = "block";
-            document.getElementById(`${this.config.className}-arrow-head`).style.display = "block";
-            this.positionArrow(quadrant, arrow, e);
+
             let textBox = this.buildTextBox(text);
-            this.positionTextBox(quadrant, textBox, arrow);
+
+            let quadrant = this.util.getQuadrant(e);
+            this.pointer.quadrant = quadrant;
+            this.pointer.target = e;
+            this.pointer
+                .build() // TODO: Should I have an "Add" function to add it to the document?
+                .position()
+                .show()
+                .positionText(textBox);
+            
+            // TODO: This almost belongs somewhere else???
             let out = this.util.isOutOfViewport(textBox);
             if (out.any) {
                 textBox.scrollIntoView();
                 out = this.util.isOutOfViewport(textBox); // Gotta check again because I scrolled
                 if (out.any) {
                     this.util.removeDivs(`.${this.config.className}-arrow-div`);
-                    this.positionArrow(quadrant, textBox, e);
+                    // this.pointer.position();
+                    //this.positionArrow(quadrant, textBox, e);  // Why am I positioning the arrow here???
                     if (quadrant == (3 || 4)) {
                         textBox.scrollIntoView();
                     }    
@@ -187,10 +185,6 @@ export class NotableTour {
             }
         }
     };
-
-
-
-
 
 
     /**
@@ -218,75 +212,6 @@ export class NotableTour {
         return interval
     }
 
-
-    // TODO: Arrow should be its own class and implement a Pointer Interface so that we can add other pointers in the future!
-    /**
-     * Builds Arrow
-     */
-    buildArrow(className) {
-        let highestZ = this.util.findHighestZ;
-        let e = this.util.addDiv([className, `${className}-arrow-div`]);
-//        let e = document.createElement("div");
-//        document.body.appendChild(e);	
-        e.style.position = "absolute";
-        //e.style.color = this.config.color;
-
-        let arrowHTML = `
-            <div id="${this.config.className}-arrow-box" style="position: relative; z-index: ${highestZ + 1}">
-                <svg width="275" height="155" class="arrow_canvas">
-                    <defs>
-                        <marker id="arrowMarker" viewBox="0 0 36 21" refX="21" refY="10" markerUnits="strokeWidth" orient="auto" markerWidth="16" markerHeight="12">
-                            <path class="${this.config.className}-arrow" d="M0,0 c30,11 30,9 0,20" id="${this.config.className}-arrow-head"></path>
-                        </marker>
-                    </defs>
-                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M15,15 Q245,15 245,147" id="${this.config.className}-arrow-quadrant-3"></path>
-                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M245,147 Q8,147 15,15" id="${this.config.className}-arrow-quadrant-1"></path>
-                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M15,147 Q245,147 245,15" id="${this.config.className}-arrow-quadrant-2"></path>
-                    <path class="${this.config.className} ${this.config.className}-arrow" marker-end="url(#arrowMarker)" d="M245,15 Q15,15 15,147" id="${this.config.className}-arrow-quadrant-4"></path>
-                </svg>
-            </div>
-        `;
-
-        e.insertAdjacentHTML('beforeend', arrowHTML);
-        //e.classList.add(`${className}-arrow-div`);
-        //e.classList.add(className);
-        return e;
-    };
-
-    /**
-     * Positions the arrow component 
-     * @param {int} quadrant Which section of the screen to place the arrow
-     * @param {HTMLElement} arrow The arrow component 
-     * @param {HTMLElement} element The element the arrow is pointing to 
-     */
-    positionArrow(quadrant, arrow, element) {
-        let box = element.getBoundingClientRect();
-        let arrowBox = arrow.getBoundingClientRect();
-        switch(quadrant) {
-            case 1:
-                arrow.style.left = (box.left  + window.scrollX + (box.width / 2)) + "px";
-                arrow.style.top = (box.bottom + window.scrollY) + "px";
-                break;
-            case 2:
-                // top should be bottom
-                arrow.style.top = (box.bottom + window.scrollY) + "px";
-                // right should be left of element
-                arrow.style.right = (box.right - (box.width / 2) + window.scrollX) + "px";
-                break;
-            case 3:
-                // bottom should be top of element
-                arrow.style.top = (box.top - arrowBox.height + window.scrollY) + "px";
-                // right should be left of element
-                arrow.style.right = (box.right - (box.width / 2)  + window.scrollX) + "px";
-                break;
-            case 4:
-                // bottom should be top of element
-                arrow.style.top = (box.top - arrowBox.height + window.scrollY) + "px";
-                // right should be right of element
-                arrow.style.left = (box.left + (box.width / 2) + window.scrollX) + "px";
-                break;
-        }
-    };
 
 
     /**
@@ -332,47 +257,13 @@ export class NotableTour {
         q.classList.add(...this.config.buttons.end.classes);
         q.classList.add(...[`${this.config.className}-button`, `${this.config.className}-button-end`]);
         q.addEventListener('click', () => {
-            this.clear();
+            this.util.removeDivs("." + this.config.className);
             this.tourRunning = false;
         });
         e.appendChild(q);
         return e;
     };
 
-
-    /**
-     * Positions text box relative to the arrow
-     * 
-     * @param {int} quadrant One of four quadrants on the screen starting with 1 in upper-left
-     * side of the screen and rotating clockwise until the lower-left side of the screen is 4
-     * @param {HTMLElement} textBox The text box to position
-     * @param {HTMLElement} arrow The arrow relating to the text box
-     */
-    positionTextBox(quadrant, textBox, arrow) {
-        let box = arrow.getBoundingClientRect();
-        let tBox = textBox.getBoundingClientRect();
-        switch(quadrant) {
-            case 1:
-                textBox.style.left = box.right + "px";
-                textBox.style.top = (box.bottom + window.scrollY - (tBox.height / 2))  + "px";
-                break;
-            case 2:
-                textBox.style.top = (box.bottom + window.scrollY - (tBox.height / 2)) + "px";
-                textBox.style.left = (window.scrollX + box.left - tBox.width) + "px";
-                textBox.style.textAlign = "right"
-                break;
-            case 3:
-                textBox.style.top = (box.top - (tBox.height / 2) + window.scrollY) + "px";
-                textBox.style.left = (window.scrollX + box.left - tBox.width) + "px";
-                textBox.style.textAlign = "right"
-                break;
-            case 4:
-                textBox.style.top = (box.top - (tBox.height / 2) + window.scrollY) + "px";
-                textBox.style.left = (box.right + window.scrollX) + "px";
-                break;
-        }
-
-    };
 
 
     /*
