@@ -2,7 +2,7 @@
   "name": "notable-tour",
   "version": "1.0.0",
   "description": "Tour Library",
-  "main": "src/NotableTour.js",
+  "main": "lib/index.js",
   "type": "module",
   "scripts": {
     "test": "npx mocha ./test/**/*.test.js",
@@ -10,7 +10,6 @@
     "build": "webpack --config webpack.config.js"
   },
   "author": "Brian Irwin",
-  "private": true,
   "license": "MIT",
   "devDependencies": {
     "c8": "^7.12.0",
