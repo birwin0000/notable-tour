@@ -5,7 +5,7 @@ export class NotableTourUtil {
      */
     get findHighestZ() {
         return [...document.querySelectorAll('body *')]
-        .map(elt => parseFloat(getComputedStyle(elt).zIndex))
+        .map(elt => parseFloat(window.getComputedStyle(elt).zIndex))
         .reduce((highest, z) => z > highest ? z : highest, 1);
     }
 

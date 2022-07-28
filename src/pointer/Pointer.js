@@ -1,4 +1,4 @@
-import { NotableTourUtil } from "../NotableTourUtil";
+import { NotableTourUtil } from "../NotableTourUtil.js";
 
 export class Pointer {
 
