@@ -23,7 +23,6 @@ module.exports = {
 }
 */
 import path from 'path';
-import webpack from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 import {fileURLToPath} from 'url';
