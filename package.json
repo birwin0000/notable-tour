@@ -5,7 +5,6 @@
   "main": "src/NotableTour.js",
   "type": "module",
   "scripts": {
-    "prep": "npm install",
     "test": "npx mocha ./test/**/*.test.js",
     "coverage": "c8 --reporter=text --all npm run test",
     "build": "webpack --config webpack.config.js"
