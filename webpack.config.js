@@ -29,12 +29,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const config = {
-  mode: 'development',
+  mode: 'production',
   devtool: false,
   entry: './src/NotableTour.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: "[name].js"
+    path: path.resolve(__dirname, 'lib'),
+    filename: "index.js"
   },
   module: {
     rules: [

@@ -1,0 +1,7 @@
+/src/**
+webpack.config.js
+/coverage/**
+/test/**
+.gitignore
+.github/**
+node_modules
