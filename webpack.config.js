@@ -23,7 +23,6 @@ module.exports = {
 }
 */
 import path from 'path';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 import {fileURLToPath} from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -44,8 +43,7 @@ const config = {
         use: ["style-loader", "css-loader"],
       },
     ],
-  },
-  plugins: [new CleanWebpackPlugin()]
+  }
 };
 
 export default config;
