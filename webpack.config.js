@@ -1,4 +1,4 @@
-const path = require("path");
+/*const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
@@ -21,23 +21,36 @@ module.exports = {
   },
   plugins: [new CleanWebpackPlugin()]
 }
-
-/*
-
+*/
 import path from 'path';
 import webpack from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = {
-  mode: 'production',
-  entry: './foo.js',
+  mode: 'development',
+  devtool: false,
+  entry: './src/NotableTour.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'foo.bundle.js'
-  }
+    filename: "[name].js"
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+  plugins: [new CleanWebpackPlugin()]
 };
 
 export default config;
-*/
+
 
 /*
 module.exports = {

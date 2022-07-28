@@ -1,5 +1,5 @@
 import { Pointer } from './Pointer.js';
-import { NotableTourUtil } from "../NotableTourUtil";
+// import { NotableTourUtil } from "../NotableTourUtil.js";
 
 export class Arrow extends Pointer {
 

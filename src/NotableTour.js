@@ -3,7 +3,7 @@ import { Arrow } from './pointer/Arrow.js';
 import { NotableTourUtil } from './NotableTourUtil.js';
 
 // Themes // TODO: Would be nice to dynamically load only one theme, but webpack chokes
-import style from './style.css';
+import style from './style.css'; // assert { type: "css" };
 import light from './theme/light.css';
 import dark from './theme/dark.css';
 import elegant from './theme/elegant.css';
