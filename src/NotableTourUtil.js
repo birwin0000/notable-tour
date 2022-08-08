@@ -1,4 +1,4 @@
-export class NotableTourUtil {
+export default class NotableTourUtil {
 
     /**
      * Finds the highest z-index component in the body of the document

@@ -1,7 +1,7 @@
-import { Pointer } from './Pointer.js';
+import Pointer from './Pointer.js';
 // import { NotableTourUtil } from "../NotableTourUtil.js";
 
-export class Arrow extends Pointer {
+export default class Arrow extends Pointer {
 
     // TODO: The Util may belong in the superclass constructor
     constructor() {

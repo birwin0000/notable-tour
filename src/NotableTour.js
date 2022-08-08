@@ -1,8 +1,7 @@
-import { Queue } from './Queue.js';
-import { Arrow } from './pointer/Arrow.js';
-import { NotableTourUtil } from './NotableTourUtil.js';
+import Queue from './Queue.js';
+import Arrow from './pointer/Arrow.js';
+import NotableTourUtil from './NotableTourUtil.js';
 
-// Themes // TODO: Would be nice to dynamically load only one theme, but webpack chokes
 import style from './style.css'; // assert { type: "css" };
 import light from './theme/light.css';
 import dark from './theme/dark.css';
@@ -10,7 +9,7 @@ import elegant from './theme/elegant.css';
 import fantasy from './theme/fantasy.css';
 import robot from './theme/robot.css';
 
-export class NotableTour {
+export default class NotableTour {
 
     constructor(conf = {}, pointer = new Arrow(), queue = new Queue(), util = new NotableTourUtil()) {
         this.queue = queue;

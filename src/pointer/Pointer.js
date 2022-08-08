@@ -1,6 +1,6 @@
-import { NotableTourUtil } from "../NotableTourUtil.js";
+import NotableTourUtil from "../NotableTourUtil.js";
 
-export class Pointer {
+export default class Pointer {
 
     constructor(util = new NotableTourUtil()) {
         this.util = util;
