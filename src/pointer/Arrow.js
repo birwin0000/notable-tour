@@ -1,18 +1,20 @@
-import Pointer from './Pointer.js';
-// import { NotableTourUtil } from "../NotableTourUtil.js";
+import NotableTourUtil from '../NotableTourUtil.js';
+// const NotableTourUtil = require("../NotableTourUtil");
 
-export default class Arrow extends Pointer {
+var Arrow = {
 
-    // TODO: The Util may belong in the superclass constructor
-    constructor() {
-        super();
-    }
-
+    util: NotableTourUtil,
+    screenSize: null,
+    zIndex: 0,
+    className: null,
+    element: null,
+    quadrant: 0,
+    target: null,
 
     /**
      * Builds a pointer
      */
-    build() {
+    build: function() {
         let e = this.util.addDiv([this.className, `${this.className}-arrow-div`]);
         e.style.position = "absolute";
 
@@ -35,33 +37,33 @@ export default class Arrow extends Pointer {
         e.insertAdjacentHTML('beforeend', arrowHTML);
         this.element = e;
         return this;
-    }
+    },
 
 
     /**
      * Shows the pointer
      */
-    show() {
-        if (!this.util.isMobile) {
+    show: function () {
+        if (!this.util.isMobile()) {
             document.getElementById(`${this.className}-arrow-quadrant-${this.quadrant}`).style.display = "block";
             document.getElementById(`${this.className}-arrow-head`).style.display = "block";
         }
         return this;
-    }
+    },
 
 
 
     /**
      * Positions the pointer
      */
-    position() {
-        if (!this.util.isMobile) {
+    position: function() {
+        if (!this.util.isMobile()) {
             this.positionByTarget(this.element);
         }
         return this;
-    }
+    },
 
-    positionByTarget(element, centered = true) {
+    positionByTarget: function(element, centered = true) {
         let box = this.target.getBoundingClientRect();
         let leftOffset = centered ? box.width / 2 : 0;
         let rightOffset = centered ? box.width / 2 : box.width;
@@ -91,15 +93,15 @@ export default class Arrow extends Pointer {
                 break;
         }
         return this;
-    }
+    },
   
 
     /**
      * Positions a textbox
      * @param {HtmlElement} box 
      */
-    positionText(textBox) {
-        if (this.util.isMobile) {
+    positionText: function(textBox) {
+        if (this.util.isMobile()) {
             this.positionByTarget(textBox, false);
         } 
         else {
@@ -128,3 +130,6 @@ export default class Arrow extends Pointer {
         }
     }
 }
+
+export default Arrow;
+// module.exports.Arrow = Arrow;

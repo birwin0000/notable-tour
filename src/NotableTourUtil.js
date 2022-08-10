@@ -1,26 +1,26 @@
-export default class NotableTourUtil {
+var NotableTourUtil = {
 
     /**
      * Finds the highest z-index component in the body of the document
      */
-    get findHighestZ() {
+    findHighestZ: function() {
         return [...document.querySelectorAll('body *')]
         .map(elt => parseFloat(window.getComputedStyle(elt).zIndex))
         .reduce((highest, z) => z > highest ? z : highest, 1);
-    }
+    },
 
 
     /**
      * Gets Window Height and Width
      */
-    get HW() {
+    HW: function() {
         let body = document.body, html = document.documentElement;
         let height = Math.max( body.scrollHeight, body.offsetHeight, 
             html.clientHeight, html.scrollHeight, html.offsetHeight );
         let width = Math.max(body.scrollWidth, body.offsetWidth,
             html.clientWidth, html.scrollWidth, html.offsetWidth);			
         return {height: height, width: width};
-    }
+    },
 
 
     /**
@@ -29,10 +29,8 @@ export default class NotableTourUtil {
      * @param  {Node}  elem The element to check
      * @return {Object}     A set of booleans for each side of the element
      */
-    isOutOfViewport(elem) {
-        // Get element's bounding
+    isOutOfViewport: function(elem) {
         var bounding = elem.getBoundingClientRect();
-        // Check if it's out of the viewport on each side
         var out = {};
         out.top = bounding.top < 0;
         out.left = bounding.left < 0;
@@ -41,7 +39,7 @@ export default class NotableTourUtil {
         out.any = out.top || out.left || out.bottom || out.right;
         out.all = out.top && out.left && out.bottom && out.right;
         return out;
-    };
+    },
 
 
     /**
@@ -50,10 +48,10 @@ export default class NotableTourUtil {
      * @returns number indicating which quadrant of the screen
      * the component resides in 
      */
-    getQuadrant(element) {
+    getQuadrant: function(element) {
         if (!element) 
             return 0;
-        let wind = this.HW;
+        let wind = this.HW();
         let box = element.getBoundingClientRect();
         let windowVCenter = wind.height / 2;
         let windowHCenter = wind.width / 2;
@@ -62,27 +60,27 @@ export default class NotableTourUtil {
         return boxVCenter < windowVCenter ?
             (boxHCenter < windowHCenter ? 1 : 2) :
             (boxHCenter < windowHCenter ? 4 : 3);
-    }
+    },
 
 
     /**
      * Removes all Divs with a class name
      * @param {string} selector to remove
      */
-    removeDivs(selector) {
+    removeDivs: function(selector) {
         const elements = document.querySelectorAll(selector);
         elements.forEach(element => {
             element.remove();
         });
-    };
+    },
 
 
-    addDiv(classNames) {
+    addDiv: function(classNames) {
         let div = document.createElement("div");
         document.body.appendChild(div);
         classNames.forEach(className => div.classList.add(className));
         return div;
-    }
+    },
 
 
     /**
@@ -93,7 +91,7 @@ export default class NotableTourUtil {
      * @param {int} top top of the div
      * @returns Component - The div created
      */
-     addAbsoluteDiv(width, height, left, top, classNames, zIndex) {
+     addAbsoluteDiv: function(width, height, left, top, classNames, zIndex) {
         let div = this.addDiv(classNames);
         div.style.zIndex = zIndex;
         div.style.width = width + "px";
@@ -102,7 +100,7 @@ export default class NotableTourUtil {
         div.style.top = top + "px";
         div.style.position = "absolute";
         return div;
-    };
+    },
     
 
     /**
@@ -111,7 +109,10 @@ export default class NotableTourUtil {
      * @readonly
      * @memberof NotableTourUtil
      */
-    get isMobile() {
+    isMobile: function() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 }
+
+export default NotableTourUtil;
+// module.exports.NotableTourUtil = NotableTourUtil;
