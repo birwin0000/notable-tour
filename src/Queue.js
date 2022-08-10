@@ -1,37 +1,43 @@
-export class Queue {
-    constructor() {
+var Queue = {
+    elements: {},
+    head: 0,
+    tail: 0,
+    enqueue: function(element) {
+        this.elements[this.tail] = element;
+        this.tail++;
+    },
+    dequeue: function() {
+        const item = this.elements[this.head];
+        this.head++;
+        return item;
+    },
+    prequeue: function() {
+        const item = this.elements[this.head - 2];
+        this.head--;
+        return item;
+    },
+    curqueue: function() {
+        const item = this.elements[this.head - 1];
+        return item;
+    },
+    peek: function() {
+        return this.elements[this.head];
+    },
+    length: function() {
+        return this.tail - this.head;
+    },
+    isEmpty: function() {
+        return this.length() === 0;
+    },
+    isStart: function() {
+        return this.head === 1;
+    },
+    clear: function() {
         this.elements = {};
         this.head = 0;
         this.tail = 0;
     }
-    enqueue(element) {
-        this.elements[this.tail] = element;
-        this.tail++;
-    }
-    dequeue() {
-        const item = this.elements[this.head];
-        this.head++;
-        return item;
-    }
-    prequeue() {
-        const item = this.elements[this.head - 2];
-        this.head--;
-        return item;
-    }
-    curqueue() {
-        const item = this.elements[this.head - 1];
-        return item;
-    }
-    peek() {
-        return this.elements[this.head];
-    }
-    get length() {
-        return this.tail - this.head;
-    }
-    get isEmpty() {
-        return this.length === 0;
-    }
-    get isStart() {
-        return this.head === 1;
-    }
 }
+
+export default Queue;
+// module.exports.Queue = Queue;

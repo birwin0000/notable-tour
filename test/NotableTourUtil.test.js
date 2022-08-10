@@ -1,27 +1,25 @@
 import { expect, assert } from 'chai';
-import { NotableTourUtil } from "../src/NotableTourUtil.js";
+import util from "../src/NotableTourUtil.js";
 import pkg from 'jsdom';
 const { JSDOM } = pkg;
 
 describe('Notable Tour Util - Is Mobile', () => {
 
     it('Should detect Chrome browser is not mobile', () => {
-        let util = new NotableTourUtil();
         global.navigator = {
             userAgent: 'chrome'
           };
         expect(util).to.be.a('object');
-        assert.equal(util.isMobile, false);
+        assert.equal(util.isMobile(), false);
     });
 
 
     it('Should detect iPhone browser is mobile', () => {
-        let util = new NotableTourUtil();
         global.navigator = {
             userAgent: 'iPhone'
           };
         expect(util).to.be.a('object');
-        assert.equal(util.isMobile, true);
+        assert.equal(util.isMobile(), true);
     });
 
 
@@ -34,7 +32,6 @@ describe('Notable Tour Util - Add Absolute Div', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     // width, height, left, top, classNames, zIndex
     let div = util.addAbsoluteDiv(200, 100, 10, 5, ['test', 'test2'], 53);
     let divsCount = dom.window.document.querySelectorAll("div").length;
@@ -56,7 +53,6 @@ describe('Notable Tour Util - Add Div', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.addDiv([]);
     let finalCount = dom.window.document.querySelectorAll("div").length;
     expect(finalCount).to.equal(1);  
@@ -67,7 +63,6 @@ describe('Notable Tour Util - Add Div', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.addDiv(['test']);
     let finalCount = dom.window.document.querySelectorAll(".test").length;
     expect(finalCount).to.equal(1);
@@ -78,7 +73,6 @@ describe('Notable Tour Util - Add Div', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.addDiv(['test', 'test2']);
     let count1 = dom.window.document.querySelectorAll(".test").length;
     let count2 = dom.window.document.querySelectorAll(".test2").length;
@@ -99,7 +93,6 @@ describe('Notable Tour Util - Remove Divs', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.removeDivs(".test-class");
     let finalCount = dom.window.document.querySelectorAll("div").length;
     expect(finalCount).to.equal(2);  
@@ -110,7 +103,6 @@ describe('Notable Tour Util - Remove Divs', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.removeDivs(".test-class");
     let finalCount = dom.window.document.querySelectorAll("div").length;
     expect(finalCount).to.equal(1);  
@@ -121,7 +113,6 @@ describe('Notable Tour Util - Remove Divs', () => {
     global.window = dom.window;
     global.document = dom.window.document;
   
-    let util = new NotableTourUtil();
     util.removeDivs(".test-class");
     let finalCount = dom.window.document.querySelectorAll("div").length;
     expect(finalCount).to.equal(0);  
@@ -163,7 +154,6 @@ describe('Notable Tour Util - Get Quadrant', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var quadrant = util.getQuadrant(elem);
     expect(quadrant).to.equal(1);
   });
@@ -200,7 +190,6 @@ describe('Notable Tour Util - Get Quadrant', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var quadrant = util.getQuadrant(elem);
     expect(quadrant).to.equal(2);
   });
@@ -237,7 +226,6 @@ describe('Notable Tour Util - Get Quadrant', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var quadrant = util.getQuadrant(elem);
     expect(quadrant).to.equal(3);
   });
@@ -274,7 +262,6 @@ describe('Notable Tour Util - Get Quadrant', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var quadrant = util.getQuadrant(elem);
     expect(quadrant).to.equal(4);
   });
@@ -302,7 +289,6 @@ describe('Notable Tour Util - Get Quadrant', () => {
 
     // OK... Build a component and pass it to the function...
     var elem = undefined;
-    let util = new NotableTourUtil();
     var quadrant = util.getQuadrant(elem);
     expect(quadrant).to.equal(0);
 
@@ -335,7 +321,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(true);
     expect(out.any).to.equal(true);
@@ -365,7 +350,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(false);
     expect(out.top).to.equal(true);
@@ -397,7 +381,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(false);
     expect(out.top).to.equal(false);
@@ -430,7 +413,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(false);
     expect(out.top).to.equal(false);
@@ -462,7 +444,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(false);
     expect(out.top).to.equal(false);
@@ -493,7 +474,6 @@ describe('Notable Tour Util - Is Out of Viewport', () => {
         }
       }
     }
-    let util = new NotableTourUtil();
     var out = util.isOutOfViewport(elem);
     expect(out.bottom).to.equal(true);
     expect(out.top).to.equal(true);
@@ -525,8 +505,7 @@ describe('Notable Tour Util - Get Height and Width', () => {
     Object.defineProperty(document.documentElement, 'scrollWidth', {value: 399, writeable: true});
     Object.defineProperty(document.documentElement, 'offsetWidth', {value: 399, writeable: true});
 
-    let util = new NotableTourUtil();
-    let z = util.HW
+    let z = util.HW()
     expect(z.height).to.equal(500);
     expect(z.width).to.equal(400);
   });
@@ -548,8 +527,7 @@ describe('Notable Tour Util - Get Height and Width', () => {
     Object.defineProperty(document.documentElement, 'scrollWidth', {value: 399, writeable: true});
     Object.defineProperty(document.documentElement, 'offsetWidth', {value: 399, writeable: true});
 
-    let util = new NotableTourUtil();
-    let z = util.HW
+    let z = util.HW();
     expect(z.height).to.equal(532);
     expect(z.width).to.equal(432);
   });
@@ -572,8 +550,7 @@ describe('Notable Tour Util - Get Height and Width', () => {
     Object.defineProperty(document.documentElement, 'scrollWidth', {value: 399, writeable: true});
     Object.defineProperty(document.documentElement, 'offsetWidth', {value: 399, writeable: true});
 
-    let util = new NotableTourUtil();
-    let z = util.HW
+    let z = util.HW();
     expect(z.height).to.equal(501);
     expect(z.width).to.equal(401);
   });
@@ -596,8 +573,7 @@ describe('Notable Tour Util - Get Height and Width', () => {
     Object.defineProperty(document.documentElement, 'scrollWidth', {value: 499, writeable: true});
     Object.defineProperty(document.documentElement, 'offsetWidth', {value: 399, writeable: true});
 
-    let util = new NotableTourUtil();
-    let z = util.HW
+    let z = util.HW();
     expect(z.height).to.equal(599);
     expect(z.width).to.equal(499);
   });
@@ -620,8 +596,7 @@ describe('Notable Tour Util - Get Height and Width', () => {
     Object.defineProperty(document.documentElement, 'scrollWidth', {value: 399, writeable: true});
     Object.defineProperty(document.documentElement, 'offsetWidth', {value: 899, writeable: true});
 
-    let util = new NotableTourUtil();
-    let z = util.HW
+    let z = util.HW();
     expect(z.height).to.equal(999);
     expect(z.width).to.equal(899);
   });
@@ -635,8 +610,7 @@ describe('Notable Tour Util - Find Highest Z', () => {
     const dom = new JSDOM(`<!DOCTYPE><html><body><div style='z-index: 5;'></div></body></html>`);
     global.window = dom.window;
     global.document = dom.window.document;
-    let util = new NotableTourUtil();
-    let z = util.findHighestZ;
+    let z = util.findHighestZ();
     expect(z).to.equal(5);
   });
 
@@ -644,8 +618,7 @@ describe('Notable Tour Util - Find Highest Z', () => {
     const dom = new JSDOM(`<!DOCTYPE><html><body><div></div><div style='z-index: 5;'></div><div style='z-index: 50;'></div><div style='z-index: 25;'></div></body></html>`);
     global.window = dom.window;
     global.document = dom.window.document;
-    let util = new NotableTourUtil();
-    let z = util.findHighestZ;
+    let z = util.findHighestZ();
     expect(z).to.equal(50);
   });
 

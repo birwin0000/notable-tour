@@ -1,13 +1,12 @@
 import { expect } from 'chai';
-import { Arrow } from '../src/pointer/Arrow.js';
+import a from '../src/pointer/Arrow.js';
 import pkg from 'jsdom';
 const { JSDOM } = pkg;
 
 
 describe('Pointer Tests', () => {
     it('Should create an Arrow', () => {
-        let a = new Arrow();
-        expect(a).to.be.an.instanceOf(Arrow);
+        expect(a).to.be.an.instanceOf(Object);
     });
 
     it('Should Build', () => {
@@ -15,7 +14,6 @@ describe('Pointer Tests', () => {
         global.window = dom.window;
         global.document = dom.window.document;
 
-        let a = new Arrow();
         a.className = 'test-class';
         a.zIndex = 1;
         let z = a.build();
@@ -34,7 +32,6 @@ describe('Pointer Tests', () => {
             userAgent: 'chrome'
           };
 
-        let a = new Arrow();
         a.className = 'test-class';
         a.zIndex = 1;
         a.quadrant = 3;
@@ -50,8 +47,7 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position the Pointer in quad 1', () => {
-        let a = new Arrow()
-            // target is the element we are wanting to position by...
+        // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
                 return {
@@ -97,7 +93,6 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position the Pointer in quad 2', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -144,7 +139,6 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position the Pointer in quad 3', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -191,7 +185,6 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position the Pointer in quad 4', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -239,7 +232,6 @@ describe('Pointer Tests', () => {
 
 
     it('Should Position Text by Pointer in quad 1', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -298,7 +290,6 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position Text by Pointer in quad 2', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -358,7 +349,6 @@ describe('Pointer Tests', () => {
     });
     
     it('Should Position Text by Pointer in quad 3', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -418,7 +408,6 @@ describe('Pointer Tests', () => {
     });
     
     it('Should Position Text by Pointer in quad 4', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
@@ -479,7 +468,6 @@ describe('Pointer Tests', () => {
     });
 
     it('Should Position Text in Mobile', () => {
-        let a = new Arrow()
             // target is the element we are wanting to position by...
         a.target = {
             getBoundingClientRect : () => {
